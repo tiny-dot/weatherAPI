@@ -1,5 +1,6 @@
 package SSF_practice.weatherAPI_practice.Services;
 
+
 import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,16 +58,20 @@ public class WeatherService {
             //read
             JsonReader reader = Json.createReader(new StringReader(payload));
             JsonObject result = reader.readObject();
+
             JsonArray jArray = result.getJsonArray("weather");
+            System.out.println(jArray); //[{"id":501,"main":"Rain","description":"moderate rain","icon":"10d"}]
 
 
             //loop - id, main, description, icon
             for(int i=0;i<jArray.size();i++){
-                String id  = jArray.getJsonObject(i).getString("id");
-                String description = jArray.getJsonObject(i).getString("description");
-                String main = jArray.getJsonObject(i).getString("main");
-                String icon = jArray.getJsonObject(i).getString("icon");
+               
 
+                String id=jArray.getString(i,"id");
+                String main=jArray.getString(i,"main");
+                String description=jArray.getString(i,"description");
+                String icon= jArray.getString(i,"icon");
+                
                 //add each one to the article list
                 Weather w = new Weather();
                 w.setId(id);
@@ -75,6 +80,7 @@ public class WeatherService {
                 w.setMain(main);
 
                 weather.add(w);
+                System.out.println(weather);//[Weather [id=id, main=main, description=description, icon=icon]]
             }
 
         } catch (Exception e){
@@ -88,21 +94,39 @@ public class WeatherService {
     //caching - if hv data in cache, get the data, if not, save the data 
     
     public List<Weather> getWeatherData(String city, List<Weather> list){
-        //get the cached data - i.e. data that alr exists
-        List<Weather> weather = weatherRepo.getWeather(city);
+        Boolean cachedData = weatherRepo.checkKeyExistence(city);
+        //1. does data exist?
+        if(cachedData){
+            //if exist, return cached data
+            return weatherRepo.getValue(city);
 
-        //if data exists, return the list of data
-        if(weather!=null){
-            return weather;
-        }
-        else{ //if not, save the data and return it 
-            //List<Weather> wList = new LinkedList<>();
-            //save data in redis
-            //this list is the one from API call
-            weatherRepo.saveSearch(city, list);
-
+        } else {
+            //if dont exist, set data
+            weatherRepo.setValue(city, list,600l);
             return list;
-        }
+    }
+       
+
+       
+
+
+
+
+        // //get the cached data - i.e. data that alr exists
+        // List<Weather> weather = weatherRepo.(city);
+
+        // //if data exists, return the list of data
+        // if(weather!=null){
+        //     return weather;
+        // }
+        // else{ //if not, save the data and return it 
+        //     //List<Weather> wList = new LinkedList<>();
+        //     //save data in redis
+        //     //this list is the one from API call
+        //     weatherRepo.saveSearch(city, list);
+
+        //     return list;
+        // }
         
     }
 

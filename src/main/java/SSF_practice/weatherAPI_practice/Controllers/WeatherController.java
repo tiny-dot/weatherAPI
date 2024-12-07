@@ -26,8 +26,10 @@ public class WeatherController {
 
         Search s= new Search(city);
         List<Weather> wList = weatherSvc.weatherList(s);
+        //caching
         List<Weather> weatherList = weatherSvc.getWeatherData(city,wList);
 
+        
         model.addAttribute("weatherList", weatherList);
 
         return "weather";
