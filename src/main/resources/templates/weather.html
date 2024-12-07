@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather results</title>
+</head>
+<body>
+    <h1>Here is the weather for: 
+        <span data-th-text="${city}"></span>
+    </h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Icon</th>
+                <th>ID</th>
+                <th>Main</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-th-each="i:${weatherList}">
+                <td>
+                    <img data-th-src="${i.icon}">
+                   </td>
+                <td data-th-text="${i.id}"></td>
+                <td data-th-text="${i.main}"></td>
+                <td data-th-text="${i.description}"></td>
+            </tr>
+        </tbody>
+        
+    </table>
+    
+</body>
+</html>
